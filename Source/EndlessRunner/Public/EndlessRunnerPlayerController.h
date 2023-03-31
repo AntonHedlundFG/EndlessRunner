@@ -36,6 +36,9 @@ protected:
 	int8 CurrentLane = 0;
 
 	UPROPERTY(EditAnywhere)
+	float JumpHoldTime = 1.0f;
+
+	UPROPERTY(EditAnywhere)
 	UInputMappingContext* InputMappingContext;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -44,7 +47,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* InputLeft;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* InputJump;
+
 	void OnInputRight();
 	void OnInputLeft();
+	void OnInputJump();
+	void OnInputStopJump();
 	void ChangeLane(bool toRight);	
+	void TickLaneMovement(float DeltaTime);
 };

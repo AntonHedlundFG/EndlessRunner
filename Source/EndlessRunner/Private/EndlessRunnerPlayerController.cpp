@@ -17,6 +17,8 @@ void AEndlessRunnerPlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(InputRight, ETriggerEvent::Triggered, this, &AEndlessRunnerPlayerController::OnInputRight);
 		EnhancedInputComponent->BindAction(InputLeft, ETriggerEvent::Triggered, this, &AEndlessRunnerPlayerController::OnInputLeft);
+		EnhancedInputComponent->BindAction(InputJump, ETriggerEvent::Started, this, &AEndlessRunnerPlayerController::OnInputJump);
+		EnhancedInputComponent->BindAction(InputJump, ETriggerEvent::Completed, this, &AEndlessRunnerPlayerController::OnInputStopJump);
 	}
 }
 
@@ -40,6 +42,18 @@ void AEndlessRunnerPlayerController::OnInputLeft()
 	ChangeLane(false);
 }
 
+void AEndlessRunnerPlayerController::OnInputJump()
+{
+	GetCharacter()->JumpMaxHoldTime = JumpHoldTime;
+	GetCharacter()->Jump();
+	UKismetSystemLibrary::PrintString(this, FString("Jump"));
+}
+void AEndlessRunnerPlayerController::OnInputStopJump()
+{
+	GetCharacter()->StopJumping();
+	UKismetSystemLibrary::PrintString(this, FString("StopJump"));
+}
+
 void AEndlessRunnerPlayerController::ChangeLane(bool toRight) 
 {
 	if (toRight && CurrentLane < 1) {
@@ -53,20 +67,23 @@ void AEndlessRunnerPlayerController::ChangeLane(bool toRight)
 void AEndlessRunnerPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	TickLaneMovement(DeltaTime);
+}
 
+void AEndlessRunnerPlayerController::TickLaneMovement(float DeltaTime)
+{
 	AEndlessRunnerCharacter* ERCharacter = CastChecked<AEndlessRunnerCharacter>(GetCharacter());
 	if (ERCharacter == nullptr) { return; }
 
 	float TargetXPos = CurrentLane * LaneWidth;
 	FVector CharPos = ERCharacter->GetActorLocation();
 	float MoveSpeed = LaneWidth / SecondsPerLaneChange;
-	
-	//Fixed movement distance if very close to target X-position
+
 	if (std::abs(CharPos.X - TargetXPos) <= MoveSpeed * DeltaTime) {
 		CharPos.X = TargetXPos;
 	}
 	else {
-		int Sign = CharPos.X - TargetXPos < 0 ? 1 : -1;
+		int Sign = CharPos.X - TargetXPos < 0 ? 1 : -1; //Move to left or right?
 		CharPos.X += DeltaTime * MoveSpeed * Sign;
 	}
 
