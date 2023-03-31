@@ -10,9 +10,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "EndlessRunnerPlayerController.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class ENDLESSRUNNER_API AEndlessRunnerPlayerController : public APlayerController
 {
@@ -28,6 +26,10 @@ protected:
 
 	virtual void SetupInputComponent() override;
 
+	UPROPERTY(EditAnywhere)
+	float LaneWidth = 500.0f;
+
+	int8 CurrentLane = 0;
 
 	UPROPERTY(EditAnywhere)
 	UInputMappingContext* InputMappingContext;
@@ -40,5 +42,6 @@ protected:
 
 	void OnInputRight();
 	void OnInputLeft();
+	void ChangeLane(bool toRight);
 	
 };

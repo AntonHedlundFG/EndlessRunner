@@ -2,6 +2,7 @@
 
 
 #include "EndlessRunnerPlayerController.h"
+#include "EndlessRunnerCharacter.h"
 
 AEndlessRunnerPlayerController::AEndlessRunnerPlayerController()
 {
@@ -31,10 +32,27 @@ void AEndlessRunnerPlayerController::BeginPlay()
 
 void AEndlessRunnerPlayerController::OnInputRight()
 {
-	UKismetSystemLibrary::PrintString(this, FString("Right"));
+	ChangeLane(true);
 }
 
 void AEndlessRunnerPlayerController::OnInputLeft()
 {
-	UKismetSystemLibrary::PrintString(this, FString("Left"));
+	ChangeLane(false);
+}
+
+void AEndlessRunnerPlayerController::ChangeLane(bool toRight) 
+{
+	if (toRight && CurrentLane < 1) {
+		CurrentLane++;
+	}
+	else if (!toRight && CurrentLane > -1) {
+		CurrentLane--;
+	}
+	
+	AEndlessRunnerCharacter* ERCharacter = CastChecked<AEndlessRunnerCharacter>(GetCharacter());
+	if (ERCharacter != nullptr) {
+		FVector CharPos = ERCharacter->GetActorLocation();
+		CharPos.X = CurrentLane * LaneWidth;
+		ERCharacter->SetActorRelativeLocation(CharPos);
+	}
 }
