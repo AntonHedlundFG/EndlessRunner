@@ -20,6 +20,7 @@ public:
 	AEndlessRunnerPlayerController();
 	
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
 
 
 protected:
@@ -28,6 +29,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float LaneWidth = 500.0f;
+
+	UPROPERTY(EditAnywhere)
+	float MoveSpeed = 500.0f;
 
 	int8 CurrentLane = 0;
 
@@ -42,6 +46,5 @@ protected:
 
 	void OnInputRight();
 	void OnInputLeft();
-	void ChangeLane(bool toRight);
-	
+	void ChangeLane(bool toRight);	
 };

@@ -44,15 +44,30 @@ void AEndlessRunnerPlayerController::ChangeLane(bool toRight)
 {
 	if (toRight && CurrentLane < 1) {
 		CurrentLane++;
-	}
-	else if (!toRight && CurrentLane > -1) {
+	} else if (!toRight && CurrentLane > -1) {
 		CurrentLane--;
-	}
+	} else { return; }
 	
+}
+
+void AEndlessRunnerPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 	AEndlessRunnerCharacter* ERCharacter = CastChecked<AEndlessRunnerCharacter>(GetCharacter());
-	if (ERCharacter != nullptr) {
-		FVector CharPos = ERCharacter->GetActorLocation();
-		CharPos.X = CurrentLane * LaneWidth;
-		ERCharacter->SetActorRelativeLocation(CharPos);
+	if (ERCharacter == nullptr) { return; }
+
+	float TargetXPos = CurrentLane * LaneWidth;
+	FVector CharPos = ERCharacter->GetActorLocation();
+	
+	//Fixed movement distance if very close to target X-position
+	if (std::abs(CharPos.X - TargetXPos) <= MoveSpeed * DeltaTime) {
+		CharPos.X = TargetXPos;
 	}
+	else {
+		int Sign = CharPos.X - TargetXPos < 0 ? 1 : -1;
+		CharPos.X += DeltaTime * MoveSpeed * Sign;
+	}
+
+	ERCharacter->SetActorRelativeLocation(CharPos);
 }
