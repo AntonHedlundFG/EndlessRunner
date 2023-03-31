@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "EndlessRunnerCharacter.generated.h"
 
 UCLASS()
@@ -14,6 +16,14 @@ class ENDLESSRUNNER_API AEndlessRunnerCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AEndlessRunnerCharacter();
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UCameraComponent* CameraComponent;
 
 protected:
 	// Called when the game starts or when spawned
