@@ -59,6 +59,7 @@ void AEndlessRunnerPlayerController::Tick(float DeltaTime)
 
 	float TargetXPos = CurrentLane * LaneWidth;
 	FVector CharPos = ERCharacter->GetActorLocation();
+	float MoveSpeed = LaneWidth / SecondsPerLaneChange;
 	
 	//Fixed movement distance if very close to target X-position
 	if (std::abs(CharPos.X - TargetXPos) <= MoveSpeed * DeltaTime) {

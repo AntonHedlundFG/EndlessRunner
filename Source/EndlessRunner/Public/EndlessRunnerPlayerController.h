@@ -31,7 +31,7 @@ protected:
 	float LaneWidth = 500.0f;
 
 	UPROPERTY(EditAnywhere)
-	float MoveSpeed = 500.0f;
+	float SecondsPerLaneChange = 0.5f;
 
 	int8 CurrentLane = 0;
 
