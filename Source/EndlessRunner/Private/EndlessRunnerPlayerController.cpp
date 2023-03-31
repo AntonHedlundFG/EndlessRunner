@@ -46,12 +46,10 @@ void AEndlessRunnerPlayerController::OnInputJump()
 {
 	GetCharacter()->JumpMaxHoldTime = JumpHoldTime;
 	GetCharacter()->Jump();
-	UKismetSystemLibrary::PrintString(this, FString("Jump"));
 }
 void AEndlessRunnerPlayerController::OnInputStopJump()
 {
 	GetCharacter()->StopJumping();
-	UKismetSystemLibrary::PrintString(this, FString("StopJump"));
 }
 
 void AEndlessRunnerPlayerController::ChangeLane(bool toRight) 
