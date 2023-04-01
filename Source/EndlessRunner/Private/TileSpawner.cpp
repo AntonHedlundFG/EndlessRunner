@@ -29,6 +29,7 @@ void ATileSpawner::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	MoveSpawnedTiles(DeltaTime);
 	CheckDeleteOldestTile();
+	CheckSpawnNewTile();
 }
 
 void ATileSpawner::SpawnRandomTile()
@@ -69,5 +70,16 @@ void ATileSpawner::CheckDeleteOldestTile()
 	{
 		SpawnedTiles.RemoveAt(0);
 		GetWorld()->DestroyActor(OldestTile);
+	}
+}
+void ATileSpawner::CheckSpawnNewTile()
+{
+	if (SpawnedTiles.Num() == 0) { return; }
+
+	AActor* NewestTile = SpawnedTiles[SpawnedTiles.Num() - 1];
+
+	if (NewestTile->GetActorLocation().Y >= SpawnNewTileAtYPosition)
+	{
+		SpawnRandomTile();
 	}
 }
