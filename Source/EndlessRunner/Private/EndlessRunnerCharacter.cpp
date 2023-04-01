@@ -3,6 +3,7 @@
 
 #include "EndlessRunnerCharacter.h"
 
+
 // Sets default values
 AEndlessRunnerCharacter::AEndlessRunnerCharacter()
 {
@@ -14,6 +15,7 @@ AEndlessRunnerCharacter::AEndlessRunnerCharacter()
 	
 	SpringArmComponent->SetupAttachment(RootComponent);
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
+
 }
 
 // Called when the game starts or when spawned

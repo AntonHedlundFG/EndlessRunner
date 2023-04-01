@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MovingTileBase.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "TileSpawner.generated.h"
 
 UCLASS()
@@ -27,10 +28,18 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FVector FixedSpawnLocation;
 
+	UPROPERTY(EditAnywhere)
+	float TileSpeed = 100.0f;
+
+	TArray<AMovingTileBase*> SpawnedTiles;
+
+	UPROPERTY(EditAnywhere)
+	AMovingTileBase* StarterTile;
 
 private:
 
 	void SpawnRandomTile();
+	void MoveSpawnedTiles(float DeltaTime);
 
 public:	
 	// Called every frame
