@@ -24,6 +24,14 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<AMovingTileBase>> TileList;
 
+	UPROPERTY(EditAnywhere)
+	FVector FixedSpawnLocation;
+
+
+private:
+
+	void SpawnRandomTile();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
