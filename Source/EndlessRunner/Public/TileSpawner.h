@@ -46,7 +46,7 @@ protected:
 
 	//Reference to the already in-scene Tile Actor.
 	UPROPERTY(EditAnywhere)
-	AMovingTileBase* StarterTile;
+	TArray<AMovingTileBase*> StarterTiles;
 
 private:
 

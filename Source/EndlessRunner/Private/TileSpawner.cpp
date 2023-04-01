@@ -18,7 +18,10 @@ void ATileSpawner::BeginPlay()
 
 	//Add the starter tile to SpawnedTiles array.
 	//The starter tile is in the scene
-	if (StarterTile != nullptr) { SpawnedTiles.Add(StarterTile); }
+	for (int i = 0; i < StarterTiles.Num(); i++)
+	{
+		SpawnedTiles.Add(StarterTiles[i]);
+	}
 	
 	SpawnRandomTile();
 }
