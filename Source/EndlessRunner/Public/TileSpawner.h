@@ -29,6 +29,12 @@ protected:
 	FVector FixedSpawnLocation;
 
 	UPROPERTY(EditAnywhere)
+	float SpawnNewTileAtYPosition = -2000.0f;
+
+	UPROPERTY(EditAnywhere)
+	float DeleteAtYPosition = 3000.0f;
+
+	UPROPERTY(EditAnywhere)
 	float TileSpeed = 100.0f;
 
 	TArray<AMovingTileBase*> SpawnedTiles;
@@ -40,6 +46,7 @@ private:
 
 	void SpawnRandomTile();
 	void MoveSpawnedTiles(float DeltaTime);
+	void CheckDeleteOldestTile();
 
 public:	
 	// Called every frame
