@@ -9,11 +9,12 @@ AObstacle::AObstacle()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Create root mesh component. Mesh is assigned in editor
 	RootMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(FName("Root Mesh Component"));
 	SetRootComponent(RootMeshComponent);
 
+	//No gravity or collision, obstacle only causes overlap
 	RootMeshComponent->SetEnableGravity(false);
-	//RootMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	RootMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 }
 
@@ -21,7 +22,6 @@ AObstacle::AObstacle()
 void AObstacle::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -31,3 +31,21 @@ void AObstacle::Tick(float DeltaTime)
 
 }
 
+void AObstacle::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	//Add BeginOverlap to this actor's overlap delegate.
+	OnActorBeginOverlap.AddDynamic(this, &AObstacle::BeginOverlap);
+}
+
+void AObstacle::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	// Check that the other collider is the player character.
+	AEndlessRunnerCharacter* RunnerCharacter = Cast<AEndlessRunnerCharacter>(OtherActor);
+	if (RunnerCharacter != nullptr) {
+		//NOT IMPLEMENTED
+		UKismetSystemLibrary::PrintString(this, "NOT IMPLEMENTED");
+	}
+	
+}

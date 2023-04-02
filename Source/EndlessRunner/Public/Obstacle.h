@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EndlessRunnerCharacter.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Obstacle.generated.h"
 
 UCLASS()
@@ -15,6 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	AObstacle();
 
+
 protected:
 
 	UPROPERTY(EditAnywhere)
@@ -24,8 +27,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Allow actors to initialize themselves on the C++ side after all of their 
+	// components have been initialized, only called during gameplay
+	virtual void PostInitializeComponents() override;
+
+	// This function is set to be called when the OnActorBeginOverlap delegate is called
+	UFUNCTION(BlueprintCallable)
+	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 };
