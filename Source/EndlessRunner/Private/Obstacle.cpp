@@ -22,6 +22,8 @@ AObstacle::AObstacle()
 void AObstacle::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GameState = GetWorld()->GetGameState<AEndlessRunnerGameStateBase>();
 }
 
 // Called every frame
@@ -43,9 +45,8 @@ void AObstacle::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	// Check that the other collider is the player character.
 	AEndlessRunnerCharacter* RunnerCharacter = Cast<AEndlessRunnerCharacter>(OtherActor);
-	if (RunnerCharacter != nullptr) {
-		//NOT IMPLEMENTED
-		UKismetSystemLibrary::PrintString(this, "NOT IMPLEMENTED");
+	if (RunnerCharacter && GameState) {
+		GameState->RemoveLife();
 	}
 	
 }

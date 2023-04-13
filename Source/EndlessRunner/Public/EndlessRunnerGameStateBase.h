@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "EndlessRunnerGameStateBase.generated.h"
 
 /**
@@ -14,4 +15,6 @@ class ENDLESSRUNNER_API AEndlessRunnerGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
 	
+public:
+	void RemoveLife();
 };

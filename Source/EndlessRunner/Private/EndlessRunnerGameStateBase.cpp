@@ -3,3 +3,7 @@
 
 #include "EndlessRunnerGameStateBase.h"
 
+void AEndlessRunnerGameStateBase::RemoveLife()
+{
+	UKismetSystemLibrary::PrintString(this, "RemoveLife");
+}

@@ -5,8 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EndlessRunnerCharacter.h"
+#include "EndlessRunnerGameStateBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Obstacle.generated.h"
+
+class AEndlessRunnerGameStateBase;
 
 UCLASS()
 class ENDLESSRUNNER_API AObstacle : public AActor
@@ -22,6 +25,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* RootMeshComponent;
+
+	//Reference to GameState, initialized in BeginPlay().
+	AEndlessRunnerGameStateBase* GameState;
 
 protected:
 	// Called when the game starts or when spawned
