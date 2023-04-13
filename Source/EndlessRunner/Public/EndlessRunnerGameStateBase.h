@@ -17,4 +17,10 @@ class ENDLESSRUNNER_API AEndlessRunnerGameStateBase : public AGameStateBase
 	
 public:
 	void RemoveLife();
+	void SetMaxLives(int lives);
+
+protected:
+	
+	UPROPERTY(BlueprintReadOnly)
+	int CurrentLives;
 };

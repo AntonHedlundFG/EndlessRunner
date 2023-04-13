@@ -5,5 +5,10 @@
 
 void AEndlessRunnerGameStateBase::RemoveLife()
 {
-	UKismetSystemLibrary::PrintString(this, "RemoveLife");
+	CurrentLives--;
+	UKismetSystemLibrary::PrintString(this, FString::FromInt(CurrentLives));
+}
+void AEndlessRunnerGameStateBase::SetMaxLives(int lives)
+{
+	CurrentLives = lives;
 }

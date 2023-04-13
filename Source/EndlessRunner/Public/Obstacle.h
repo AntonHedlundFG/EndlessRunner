@@ -27,7 +27,7 @@ protected:
 	UStaticMeshComponent* RootMeshComponent;
 
 	//Reference to GameState, initialized in BeginPlay().
-	AEndlessRunnerGameStateBase* GameState;
+	TObjectPtr<AEndlessRunnerGameStateBase> GameState;
 
 protected:
 	// Called when the game starts or when spawned
