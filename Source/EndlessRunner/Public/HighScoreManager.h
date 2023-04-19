@@ -41,6 +41,26 @@ public:
 
 };
 
+USTRUCT(BlueprintType)
+struct FHighScores
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY()
+	TArray<FHighScore> HighScores;
+
+	void SetHighScores(TArray<FHighScore> HighScoresIn)
+	{
+		HighScores.Empty();
+		for (int i = 0; i < HighScoresIn.Num(); i++) 
+		{
+			HighScores.Add(HighScoresIn[i]);
+		}
+	}
+};
+
 
 class ENDLESSRUNNER_API HighScoreManager
 {

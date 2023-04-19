@@ -34,10 +34,14 @@ void HighScoreManager::FillBlankScores()
 void HighScoreManager::LoadHighScores()
 {
 	FString JSONStringArray;
+	FHighScores OutHighScores;
 	if (FFileHelper::LoadFileToString(JSONStringArray, *HighScoreFilePath))
 	{
-		//FJsonObjectConverter::JsonArrayStringToUStruct(JSONStringArray, &HighScores);
-		//FJsonObjectConverter::JsonObjectStringToUStruct(JSONStringArray, &HighScores);
+		FJsonObjectConverter::JsonObjectStringToUStruct<FHighScores>(JSONStringArray, &OutHighScores);
+		for (int i = 0; i < OutHighScores.HighScores.Num(); i++) 
+		{
+			HighScores.Add(OutHighScores.HighScores[i]);
+		}
 	}
 
 	//LOADFROMFILE
@@ -46,18 +50,11 @@ void HighScoreManager::LoadHighScores()
 
 void HighScoreManager::SaveHighScores()
 {
-	//The string where we store the entire array.
 	FString JSONStringArray;
+	FHighScores InHighScores;
+	InHighScores.SetHighScores(HighScores);
 
-	//Iterate through the array, serializing each element and adding it to the array string.
-	for (int i = 0; i < HighScores.Num(); i++) 
-	{
-		FHighScore HighScoreElement = HighScores[i];
-		FString JSONStringElement;
-		FJsonObjectConverter::UStructToJsonObjectString<FHighScore>(HighScoreElement, JSONStringElement);
-		JSONStringArray += JSONStringElement;
-	}
+	FJsonObjectConverter::UStructToJsonObjectString<FHighScores>(InHighScores, JSONStringArray);
 
-	//Write the array string into the savefile.
 	FFileHelper::SaveStringToFile(JSONStringArray, *HighScoreFilePath);
 }
