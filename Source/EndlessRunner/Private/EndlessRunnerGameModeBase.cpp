@@ -7,6 +7,7 @@ void AEndlessRunnerGameModeBase::InitGameState()
 {
 	Super::InitGameState();
 	InitEndlessGameState();
+	
 }
 
 void AEndlessRunnerGameModeBase::InitEndlessGameState()
