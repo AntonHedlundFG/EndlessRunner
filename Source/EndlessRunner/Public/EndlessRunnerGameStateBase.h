@@ -7,14 +7,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Delegates/Delegate.h"
 #include "TileSpawner.h"
+#include "EndlessRunnerEnums.h"
 #include "EndlessRunnerGameStateBase.generated.h"
-
-UENUM(BlueprintType)
-enum class GameplayState : uint8 {
-	Stop UMETA(DisplayName = "Stop"),
-	Pause UMETA(DisplayName = "Pause"),
-	Play UMETA(DisplayName = "Play")
-};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameSpeedChange, float, NewSpeed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayStateChange, GameplayState, NewState);
