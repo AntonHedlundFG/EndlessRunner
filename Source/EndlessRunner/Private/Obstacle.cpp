@@ -46,7 +46,7 @@ void AObstacle::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	// Check that the other collider is the player character.
 	AEndlessRunnerCharacter* RunnerCharacter = Cast<AEndlessRunnerCharacter>(OtherActor);
 	if (RunnerCharacter && GameState) {
-		GameState->RemoveLife();
+		GameState->CollideWithObstacle();
 	}
 	
 }

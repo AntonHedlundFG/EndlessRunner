@@ -3,14 +3,25 @@
 
 #include "EndlessRunnerGameStateBase.h"
 
-void AEndlessRunnerGameStateBase::RemoveLife()
+void AEndlessRunnerGameStateBase::CollideWithObstacle()
 {
-	CurrentLives--;
-	UKismetSystemLibrary::PrintString(this, FString::FromInt(CurrentLives));
+	//Nothing happens if we're invulnerable
+	if (!GetWorldTimerManager().IsTimerActive(CollisionTimerHandle))
+	{
+		if (--CurrentLives <= 0) 
+		{
+			EndGame();
+		}
+		else
+		{
+			//Invulnerability start
+			GetWorldTimerManager().SetTimer(CollisionTimerHandle, this, &AEndlessRunnerGameStateBase::OnCollisionTimer, InvulnerableDuration, false);
+		}
+	}
 }
-void AEndlessRunnerGameStateBase::SetMaxLives(int lives)
+void AEndlessRunnerGameStateBase::SetMaxLives(int Lives)
 {
-	CurrentLives = lives;
+	CurrentLives = Lives;
 }
 void AEndlessRunnerGameStateBase::SetSpeed(float NewSpeed)
 {
@@ -21,4 +32,12 @@ void AEndlessRunnerGameStateBase::SetState(GameplayState NewState)
 {
 	CurrentState = NewState;
 	OnGameplayStateChange.Broadcast(NewState);
+}
+void AEndlessRunnerGameStateBase::OnCollisionTimer()
+{
+	//Invulnerability end
+}
+void AEndlessRunnerGameStateBase::EndGame()
+{
+	SetState(GameplayState::Stop);
 }

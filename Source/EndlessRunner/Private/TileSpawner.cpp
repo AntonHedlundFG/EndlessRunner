@@ -41,6 +41,8 @@ void ATileSpawner::BeginPlay()
 void ATileSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (CurrentState != GameplayState::Play) { return; }
 	MoveSpawnedTiles(DeltaTime);
 	CheckDeleteOldestTile();
 	CheckSpawnNewTile();

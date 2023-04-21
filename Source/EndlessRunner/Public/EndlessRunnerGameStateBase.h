@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Engine/EngineTypes.h"
 #include "Delegates/Delegate.h"
 #include "TileSpawner.h"
 #include "EndlessRunnerEnums.h"
@@ -19,8 +20,8 @@ class ENDLESSRUNNER_API AEndlessRunnerGameStateBase : public AGameStateBase
 	GENERATED_BODY()
 	
 public:
-	void RemoveLife();
-	void SetMaxLives(int lives);
+	void CollideWithObstacle();
+	void SetMaxLives(int Lives);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnGameSpeedChange OnGameSpeedChange;
@@ -29,16 +30,26 @@ public:
 	FOnGameplayStateChange OnGameplayStateChange;
 
 	UPROPERTY()
-	GameplayState CurrentState = GameplayState::Stop;
+	GameplayState CurrentState = GameplayState::Play;
 
 	UPROPERTY()
 	float CurrentSpeed = 2000.0f;
+
 
 protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	int CurrentLives;
 
+	FTimerHandle CollisionTimerHandle;
+	void OnCollisionTimer();
+
+	UPROPERTY(EditAnywhere)
+	float InvulnerableDuration = 2.0f;
+	
+
 	void SetSpeed(float NewSpeed);
 	void SetState(GameplayState NewState);
+
+	void EndGame();
 };
