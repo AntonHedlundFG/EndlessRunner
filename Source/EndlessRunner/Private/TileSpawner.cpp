@@ -17,8 +17,6 @@ void ATileSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RegisterToGameState();
-
 	//Add the starter tile to SpawnedTiles array.
 	//The starter tile is in the scene
 	for (int i = 0; i < StarterTiles.Num(); i++)
@@ -27,15 +25,6 @@ void ATileSpawner::BeginPlay()
 	}
 	
 	SpawnRandomTile();
-}
-
-void ATileSpawner::RegisterToGameState()
-{
-	if (TObjectPtr<AEndlessRunnerGameStateBase> GameState = GetWorld()->GetGameState<AEndlessRunnerGameStateBase>())
-	{
-		TObjectPtr<ATileSpawner> ThisPointer = this;
-		GameState->RegisterTileSpawner(ThisPointer);
-	}
 }
 
 // Called every frame

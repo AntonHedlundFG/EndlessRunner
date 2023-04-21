@@ -12,7 +12,3 @@ void AEndlessRunnerGameStateBase::SetMaxLives(int lives)
 {
 	CurrentLives = lives;
 }
-void AEndlessRunnerGameStateBase::RegisterTileSpawner(TObjectPtr<ATileSpawner> Spawner)
-{
-	RegisteredTileSpawner = Spawner;
-}

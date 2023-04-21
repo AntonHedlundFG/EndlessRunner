@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MovingTileBase.h"
+#include "EndlessRunnerEnums.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "TileSpawner.generated.h"
 
@@ -61,8 +62,6 @@ private:
 
 	//Checks if the newst tile has moved past SpawnNewTileAtYPosition and spawns a new one
 	void CheckSpawnNewTile();
-
-	void RegisterToGameState();
 
 public:	
 	// Called every frame

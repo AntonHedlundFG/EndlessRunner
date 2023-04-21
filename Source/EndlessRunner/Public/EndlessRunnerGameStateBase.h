@@ -22,10 +22,6 @@ public:
 	void RemoveLife();
 	void SetMaxLives(int lives);
 
-	//This should be removed if I can get the delegates to work properly
-	void RegisterTileSpawner(TObjectPtr<ATileSpawner> Spawner);
-	TObjectPtr<ATileSpawner> RegisteredTileSpawner;
-
 	UPROPERTY(BlueprintAssignable)
 	FOnGameSpeedChange OnGameSpeedChange;
 
