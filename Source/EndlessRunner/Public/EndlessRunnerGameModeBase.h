@@ -6,7 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "EndlessRunnerGameStateBase.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "HighScoreManager.h"
 #include "EndlessRunnerGameModeBase.generated.h"
 
 class AEndlessRunnerGameStateBase;
@@ -28,7 +27,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int MaxLives = 3;
 
-	HighScoreManager HighScore;
+	UPROPERTY(EditAnywhere)
+	float InvulnerableDuration = 2.0f;
 
 private:
 

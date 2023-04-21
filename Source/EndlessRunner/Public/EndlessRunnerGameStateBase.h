@@ -8,6 +8,7 @@
 #include "Engine/EngineTypes.h"
 #include "Delegates/Delegate.h"
 #include "TileSpawner.h"
+#include "HighScoreManager.h"
 #include "EndlessRunnerEnums.h"
 #include "EndlessRunnerGameStateBase.generated.h"
 
@@ -18,7 +19,10 @@ UCLASS()
 class ENDLESSRUNNER_API AEndlessRunnerGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	AEndlessRunnerGameStateBase();
+
 public:
 	void CollideWithObstacle();
 	void SetMaxLives(int Lives);
@@ -35,6 +39,14 @@ public:
 	UPROPERTY()
 	float CurrentSpeed = 2000.0f;
 
+	UPROPERTY(VisibleAnywhere)
+	float InvulnerableDuration = 2.0f;
+
+	HighScoreManager HighScore;
+
+	UPROPERTY(VisibleAnywhere)
+	uint32 CurrentScore;
+
 
 protected:
 	
@@ -44,12 +56,16 @@ protected:
 	FTimerHandle CollisionTimerHandle;
 	void OnCollisionTimer();
 
-	UPROPERTY(EditAnywhere)
-	float InvulnerableDuration = 2.0f;
+	
 	
 
 	void SetSpeed(float NewSpeed);
 	void SetState(GameplayState NewState);
 
 	void EndGame();
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 };

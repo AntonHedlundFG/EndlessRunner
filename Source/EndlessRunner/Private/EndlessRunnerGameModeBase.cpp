@@ -14,4 +14,5 @@ void AEndlessRunnerGameModeBase::InitEndlessGameState()
 {
 	EndlessGameState = Cast<AEndlessRunnerGameStateBase>(GameState);
 	EndlessGameState->SetMaxLives(MaxLives);
+	EndlessGameState->InvulnerableDuration = InvulnerableDuration;
 }

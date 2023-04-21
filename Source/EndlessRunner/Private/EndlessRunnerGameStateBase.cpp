@@ -3,6 +3,21 @@
 
 #include "EndlessRunnerGameStateBase.h"
 
+AEndlessRunnerGameStateBase::AEndlessRunnerGameStateBase()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AEndlessRunnerGameStateBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (CurrentState == GameplayState::Play)
+	{
+		CurrentScore += DeltaTime * CurrentSpeed;
+	}
+}
+
 void AEndlessRunnerGameStateBase::CollideWithObstacle()
 {
 	//Nothing happens if we're invulnerable
@@ -40,4 +55,7 @@ void AEndlessRunnerGameStateBase::OnCollisionTimer()
 void AEndlessRunnerGameStateBase::EndGame()
 {
 	SetState(GameplayState::Stop);
+
+	//Simple, needs input screen
+	HighScore.AddNewHighScore(FString("New Score"), CurrentScore);
 }
