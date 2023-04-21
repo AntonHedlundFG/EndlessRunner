@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "TileSpawner.h"
 #include "EndlessRunnerGameStateBase.generated.h"
 
 /**
@@ -18,6 +19,9 @@ class ENDLESSRUNNER_API AEndlessRunnerGameStateBase : public AGameStateBase
 public:
 	void RemoveLife();
 	void SetMaxLives(int lives);
+
+	void RegisterTileSpawner(TObjectPtr<ATileSpawner> Spawner);
+	TObjectPtr<ATileSpawner> RegisteredTileSpawner;
 
 protected:
 	

@@ -8,7 +8,7 @@
 #define HIGH_SCORE_FILE_NAME "HighScores.json"
 
 //This struct describes a single entry in the HighScore array.
-USTRUCT(BlueprintType)
+USTRUCT()
 struct FHighScore
 {
 	GENERATED_BODY()
@@ -65,7 +65,7 @@ public:
 
 //This struct lists all entries in the HighScore array
 //It is only required to manage Json conversion
-USTRUCT(BlueprintType)
+USTRUCT()
 struct FHighScores
 {
 	GENERATED_BODY()

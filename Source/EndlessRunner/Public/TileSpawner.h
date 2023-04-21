@@ -62,6 +62,8 @@ private:
 	//Checks if the newst tile has moved past SpawnNewTileAtYPosition and spawns a new one
 	void CheckSpawnNewTile();
 
+	void RegisterToGameState();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

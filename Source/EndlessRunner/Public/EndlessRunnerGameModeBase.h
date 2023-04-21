@@ -28,7 +28,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int MaxLives = 3;
 
-	HighScoreManager HighScoreManager;
+	HighScoreManager HighScore;
 
 private:
 
