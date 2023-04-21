@@ -12,3 +12,13 @@ void AEndlessRunnerGameStateBase::SetMaxLives(int lives)
 {
 	CurrentLives = lives;
 }
+void AEndlessRunnerGameStateBase::SetSpeed(float NewSpeed)
+{
+	CurrentSpeed = NewSpeed;
+	OnGameSpeedChange.Broadcast(NewSpeed);
+}
+void AEndlessRunnerGameStateBase::SetState(GameplayState NewState)
+{
+	CurrentState = NewState;
+	OnGameplayStateChange.Broadcast(NewState);
+}

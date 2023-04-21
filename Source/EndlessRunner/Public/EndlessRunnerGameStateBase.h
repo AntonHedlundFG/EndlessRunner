@@ -32,10 +32,13 @@ public:
 	GameplayState CurrentState = GameplayState::Stop;
 
 	UPROPERTY()
-	float CurrentSpeed = 100.0f;
+	float CurrentSpeed = 2000.0f;
 
 protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	int CurrentLives;
+
+	void SetSpeed(float NewSpeed);
+	void SetState(GameplayState NewState);
 };

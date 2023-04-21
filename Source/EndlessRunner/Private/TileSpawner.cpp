@@ -17,6 +17,16 @@ void ATileSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GameState = GetWorld()->GetGameState<AEndlessRunnerGameStateBase>();
+	
+	if (GameState) 
+	{
+		SetSpeed(GameState->CurrentSpeed);
+		GameState->OnGameSpeedChange.AddDynamic(this, &ATileSpawner::SetSpeed);
+		SetState(GameState->CurrentState);
+		GameState->OnGameplayStateChange.AddDynamic(this, &ATileSpawner::SetState);
+	}
+
 	//Add the starter tile to SpawnedTiles array.
 	//The starter tile is in the scene
 	for (int i = 0; i < StarterTiles.Num(); i++)
@@ -86,4 +96,15 @@ void ATileSpawner::CheckSpawnNewTile()
 	{
 		SpawnRandomTile();
 	}
+}
+
+void ATileSpawner::SetSpeed(float NewSpeed) 
+{
+	TileSpeed = NewSpeed;
+	UKismetSystemLibrary::PrintString(this, FString("New Speed: ") + FString::FromInt((int)NewSpeed));
+}
+void ATileSpawner::SetState(GameplayState NewState)
+{
+	CurrentState = NewState;
+	UKismetSystemLibrary::PrintString(this, FString("New State: ") + FString::FromInt((int)NewState));
 }

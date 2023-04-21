@@ -9,6 +9,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "TileSpawner.generated.h"
 
+class AEndlessRunnerGameStateBase;
+
 UCLASS()
 class ENDLESSRUNNER_API ATileSpawner : public AActor
 {
@@ -21,6 +23,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//A stored cast reference to the GameState
+	TObjectPtr<AEndlessRunnerGameStateBase> GameState;
 
 	//A list of all tile blueprint types. Managed in the inspector
 	UPROPERTY(EditAnywhere)
@@ -39,8 +44,17 @@ protected:
 	float DeleteAtYPosition = 3000.0f;
 
 	//Movement speed for tiles
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	float TileSpeed = 100.0f;
+
+	UFUNCTION()
+	void SetSpeed(float NewSpeed);
+
+	UPROPERTY(VisibleAnywhere)
+	GameplayState CurrentState;
+
+	UFUNCTION()
+	void SetState(GameplayState NewState);
 
 	//List of all currently spawned Tile Actors
 	TArray<AMovingTileBase*> SpawnedTiles;
