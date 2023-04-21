@@ -5,12 +5,20 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Delegates/Delegate.h"
 #include "TileSpawner.h"
 #include "EndlessRunnerGameStateBase.generated.h"
 
-/**
- * 
- */
+UENUM(BlueprintType)
+enum class GameplayState : uint8 {
+	Stop UMETA(DisplayName = "Stop"),
+	Pause UMETA(DisplayName = "Pause"),
+	Play UMETA(DisplayName = "Play")
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameSpeedChange, float, NewSpeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayStateChange, GameplayState, NewState);
+
 UCLASS()
 class ENDLESSRUNNER_API AEndlessRunnerGameStateBase : public AGameStateBase
 {
@@ -20,8 +28,21 @@ public:
 	void RemoveLife();
 	void SetMaxLives(int lives);
 
+	//This should be removed if I can get the delegates to work properly
 	void RegisterTileSpawner(TObjectPtr<ATileSpawner> Spawner);
 	TObjectPtr<ATileSpawner> RegisteredTileSpawner;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGameSpeedChange OnGameSpeedChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGameplayStateChange OnGameplayStateChange;
+
+	UPROPERTY()
+	GameplayState CurrentState = GameplayState::Stop;
+
+	UPROPERTY()
+	float CurrentSpeed = 100.0f;
 
 protected:
 	
