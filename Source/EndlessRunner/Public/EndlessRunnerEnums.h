@@ -9,5 +9,6 @@ UENUM(BlueprintType)
 enum class GameplayState : uint8 {
 	Stop UMETA(DisplayName = "Stop"),
 	Pause UMETA(DisplayName = "Pause"),
-	Play UMETA(DisplayName = "Play")
+	Play UMETA(DisplayName = "Play"),
+	WaitingForName UMETA(DisplayName = "WaitingForName")
 };

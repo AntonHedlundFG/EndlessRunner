@@ -20,8 +20,8 @@ void AEndlessRunnerGameStateBase::Tick(float DeltaTime)
 
 void AEndlessRunnerGameStateBase::CollideWithObstacle()
 {
-	//Nothing happens if we're invulnerable
-	if (!GetWorldTimerManager().IsTimerActive(CollisionTimerHandle))
+	//Nothing happens if we're invulnerable or not playing
+	if (!GetWorldTimerManager().IsTimerActive(CollisionTimerHandle) && CurrentState == GameplayState::Play)
 	{
 		if (--CurrentLives <= 0) 
 		{
@@ -54,8 +54,20 @@ void AEndlessRunnerGameStateBase::OnCollisionTimer()
 }
 void AEndlessRunnerGameStateBase::EndGame()
 {
-	SetState(GameplayState::Stop);
+	
+	//Maybe this should also include an "&& OnRequestNameInput.IsBound()"?
+	if (HighScore.CheckRankFromScore(CurrentScore) < HighScore.ListSize)
+	{
+		SetState(GameplayState::WaitingForName);
+		OnRequestNameInput.Broadcast();
+	} else { SetState(GameplayState::Stop); }
+}
 
-	//Simple, needs input screen
-	HighScore.AddNewHighScore(FString("New Score"), CurrentScore);
+void AEndlessRunnerGameStateBase::NameInputRequestResponse(FString Name)
+{
+	if (CurrentState != GameplayState::WaitingForName) { return; }
+
+	HighScore.AddNewHighScore(Name, CurrentScore);
+	OnHighScoreChange.Broadcast();
+	CurrentState = GameplayState::Stop;
 }

@@ -14,6 +14,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameSpeedChange, float, NewSpeed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayStateChange, GameplayState, NewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHighScoreChange);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestNameInput);
 
 UCLASS()
 class ENDLESSRUNNER_API AEndlessRunnerGameStateBase : public AGameStateBase
@@ -44,12 +46,20 @@ public:
 
 	HighScoreManager HighScore;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnHighScoreChange OnHighScoreChange;
+
 	UFUNCTION(BlueprintCallable)
 	FString GetHighScoreString() { return HighScore.GetString(); }
 
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentScore;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnRequestNameInput OnRequestNameInput;
+
+	UFUNCTION(BlueprintCallable)
+	void NameInputRequestResponse(FString Name);
 
 protected:
 	

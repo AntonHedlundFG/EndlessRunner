@@ -102,6 +102,7 @@ bool HighScoreManager::AddNewHighScore(FString Name, uint32 Score)
 FString HighScoreManager::GetString()
 {
 	FString StringBuilder;
+	StringBuilder += FString("Leaderboard: \n");
 	for (int i = 0; i < HighScores.Num(); i++) 
 	{
 		StringBuilder += HighScores[i].Name;
