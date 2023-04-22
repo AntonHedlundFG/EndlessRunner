@@ -44,8 +44,11 @@ public:
 
 	HighScoreManager HighScore;
 
-	UPROPERTY(VisibleAnywhere)
-	uint32 CurrentScore;
+	UFUNCTION(BlueprintCallable)
+	FString GetHighScoreString() { return HighScore.GetString(); }
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentScore;
 
 
 protected:

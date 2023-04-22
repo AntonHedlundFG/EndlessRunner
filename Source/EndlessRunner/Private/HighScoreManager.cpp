@@ -98,3 +98,16 @@ bool HighScoreManager::AddNewHighScore(FString Name, uint32 Score)
 
 	return true;
 }
+
+FString HighScoreManager::GetString()
+{
+	FString StringBuilder;
+	for (int i = 0; i < HighScores.Num(); i++) 
+	{
+		StringBuilder += HighScores[i].Name;
+		StringBuilder += FString(": ");
+		StringBuilder += FString::FromInt(HighScores[i].Score);
+		StringBuilder += FString("\n");
+	}
+	return StringBuilder;
+}

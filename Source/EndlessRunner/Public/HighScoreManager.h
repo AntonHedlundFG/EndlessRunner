@@ -105,6 +105,9 @@ public:
 	//Array storing HighScores during play, sorted highest->lowest
 	TArray<FHighScore> HighScores;
 
+	UFUNCTION(BlueprintCallable)
+	FString GetString();
+
 private:
 
 	//Pads HighScores array with fake values if HighScores.Num() < ListSize
