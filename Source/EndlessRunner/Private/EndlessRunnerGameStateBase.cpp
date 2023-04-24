@@ -34,6 +34,21 @@ void AEndlessRunnerGameStateBase::CollideWithObstacle()
 		}
 	}
 }
+void AEndlessRunnerGameStateBase::InputPause() 
+{
+	switch (CurrentState) {
+	case GameplayState::Pause:
+		CurrentState = GameplayState::Play;
+		UGameplayStatics::SetGamePaused(this, false);
+		OnGameplayStateChange.Broadcast(GameplayState::Play);
+		break;
+	case GameplayState::Play:
+		CurrentState = GameplayState::Pause;
+		UGameplayStatics::SetGamePaused(this, true);
+		OnGameplayStateChange.Broadcast(GameplayState::Pause);
+		break;
+	}
+}
 void AEndlessRunnerGameStateBase::SetMaxLives(int Lives)
 {
 	CurrentLives = Lives;

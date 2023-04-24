@@ -4,6 +4,7 @@
 #include "EndlessRunnerPlayerController.h"
 #include "EndlessRunnerCharacter.h"
 
+
 AEndlessRunnerPlayerController::AEndlessRunnerPlayerController()
 {
 	bShowMouseCursor = true;
@@ -19,6 +20,8 @@ void AEndlessRunnerPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(InputLeft, ETriggerEvent::Triggered, this, &AEndlessRunnerPlayerController::OnInputLeft);
 		EnhancedInputComponent->BindAction(InputJump, ETriggerEvent::Started, this, &AEndlessRunnerPlayerController::OnInputJump);
 		EnhancedInputComponent->BindAction(InputJump, ETriggerEvent::Completed, this, &AEndlessRunnerPlayerController::OnInputStopJump);
+		EnhancedInputComponent->BindAction(InputPause, ETriggerEvent::Started, this, &AEndlessRunnerPlayerController::OnInputPause);
+		InputPause->bTriggerWhenPaused = true;
 	}
 }
 
@@ -30,6 +33,8 @@ void AEndlessRunnerPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(InputMappingContext, 0);
 	}
+
+	GameState = GetWorld()->GetGameState<AEndlessRunnerGameStateBase>();
 }
 
 void AEndlessRunnerPlayerController::OnInputRight()
@@ -44,6 +49,7 @@ void AEndlessRunnerPlayerController::OnInputLeft()
 
 void AEndlessRunnerPlayerController::OnInputJump()
 {
+	if (GameState->CurrentState != GameplayState::Play) { return; }
 	GetCharacter()->JumpMaxHoldTime = JumpHoldTime;
 	GetCharacter()->Jump();
 }
@@ -51,9 +57,17 @@ void AEndlessRunnerPlayerController::OnInputStopJump()
 {
 	GetCharacter()->StopJumping();
 }
+void AEndlessRunnerPlayerController::OnInputPause()
+{
+	if (GameState)
+	{
+		GameState->InputPause();
+	}
+}
 
 void AEndlessRunnerPlayerController::ChangeLane(bool toRight) 
 {
+	if (GameState->CurrentState != GameplayState::Play) { return; }
 	if (toRight && CurrentLane < 1) {
 		CurrentLane++;
 	} else if (!toRight && CurrentLane > -1) {
@@ -70,6 +84,7 @@ void AEndlessRunnerPlayerController::Tick(float DeltaTime)
 
 void AEndlessRunnerPlayerController::TickLaneMovement(float DeltaTime)
 {
+	if (GameState->CurrentState != GameplayState::Play) { return; }
 	AEndlessRunnerCharacter* ERCharacter = CastChecked<AEndlessRunnerCharacter>(GetCharacter());
 	if (ERCharacter == nullptr) { return; }
 

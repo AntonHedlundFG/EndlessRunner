@@ -6,10 +6,12 @@
 #include "GameFramework/PlayerController.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
+#include "EndlessRunnerGameStateBase.h"
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "EndlessRunnerPlayerController.generated.h"
 
+class AEndlessRunnerGameStateBase;
 
 UCLASS()
 class ENDLESSRUNNER_API AEndlessRunnerPlayerController : public APlayerController
@@ -24,6 +26,8 @@ public:
 
 
 protected:
+
+	TObjectPtr<AEndlessRunnerGameStateBase> GameState;
 
 	virtual void SetupInputComponent() override;
 
@@ -50,10 +54,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* InputJump;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* InputPause;
+
 	void OnInputRight();
 	void OnInputLeft();
 	void OnInputJump();
 	void OnInputStopJump();
+	void OnInputPause();
 	void ChangeLane(bool toRight);	
 	void TickLaneMovement(float DeltaTime);
 };

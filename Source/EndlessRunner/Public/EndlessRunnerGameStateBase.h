@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/EngineTypes.h"
 #include "Delegates/Delegate.h"
 #include "TileSpawner.h"
@@ -28,6 +29,7 @@ public:
 public:
 	void CollideWithObstacle();
 	void SetMaxLives(int Lives);
+	void InputPause();
 
 	UPROPERTY(BlueprintAssignable)
 	FOnGameSpeedChange OnGameSpeedChange;
@@ -36,7 +38,7 @@ public:
 	FOnGameplayStateChange OnGameplayStateChange;
 
 	UPROPERTY()
-	GameplayState CurrentState = GameplayState::Play;
+	GameplayState CurrentState = GameplayState::Pause;
 
 	UPROPERTY()
 	float CurrentSpeed = 2000.0f;
