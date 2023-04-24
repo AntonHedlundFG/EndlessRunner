@@ -93,7 +93,7 @@ public:
 	~HighScoreManager();
 
 	//How many HighScores should be stored
-	uint8 const ListSize = 3;
+	uint8 const ListSize = 5;
 
 	//Checks which place on the leaderboard a new score would get
 	//Returns ListSize if none.
