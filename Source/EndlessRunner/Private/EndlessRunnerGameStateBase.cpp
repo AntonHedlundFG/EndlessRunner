@@ -75,7 +75,11 @@ void AEndlessRunnerGameStateBase::EndGame()
 	{
 		SetState(GameplayState::WaitingForName);
 		OnRequestNameInput.Broadcast();
-	} else { SetState(GameplayState::Stop); }
+	} else 
+	{ 
+		SetState(GameplayState::Stop);
+		GetWorldTimerManager().SetTimer(EndGameTimerHandle, this, &AEndlessRunnerGameStateBase::ResetGame, ResetGameDuration, false);
+	}
 }
 
 void AEndlessRunnerGameStateBase::NameInputRequestResponse(FString Name)
@@ -85,4 +89,10 @@ void AEndlessRunnerGameStateBase::NameInputRequestResponse(FString Name)
 	HighScore.AddNewHighScore(Name, CurrentScore);
 	OnHighScoreChange.Broadcast();
 	CurrentState = GameplayState::Stop;
+	GetWorldTimerManager().SetTimer(EndGameTimerHandle, this, &AEndlessRunnerGameStateBase::ResetGame, ResetGameDuration, false);
+}
+
+void AEndlessRunnerGameStateBase::ResetGame()
+{
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }

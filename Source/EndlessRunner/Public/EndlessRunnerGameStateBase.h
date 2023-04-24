@@ -71,8 +71,11 @@ protected:
 	FTimerHandle CollisionTimerHandle;
 	void OnCollisionTimer();
 
-	
-	
+
+	FTimerHandle EndGameTimerHandle;
+	UPROPERTY(VisibleAnywhere)
+	float ResetGameDuration = 3.0f;
+	void ResetGame();
 
 	void SetSpeed(float NewSpeed);
 	void SetState(GameplayState NewState);

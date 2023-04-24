@@ -4,12 +4,6 @@
 #include "EndlessRunnerPlayerController.h"
 #include "EndlessRunnerCharacter.h"
 
-
-AEndlessRunnerPlayerController::AEndlessRunnerPlayerController()
-{
-	bShowMouseCursor = true;
-}
-
 void AEndlessRunnerPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

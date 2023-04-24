@@ -19,7 +19,6 @@ class ENDLESSRUNNER_API AEndlessRunnerPlayerController : public APlayerControlle
 	GENERATED_BODY()
 
 public:
-	AEndlessRunnerPlayerController();
 	
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaTime) override;
