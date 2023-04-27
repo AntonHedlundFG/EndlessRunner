@@ -17,3 +17,8 @@ In this part I will implement the actual level generation, beyond the basic prot
 - Random obstacle generation on tile spawn
 - Gradual difficulty increase (higher movement speed and/or obstacle frequency) [How will obstacle frequency affect score?]
 - (optional) Object pooling for obstacles & tiles
+
+### UPDATE: Surprise tasks
+- 2 Players
+  - This was tricky to solve; It appears two PlayerController components struggle to use the same InputDevice. The solution is somewhat hacky; PC1 handles all input and calls the respective functions in PC2 if available. Note that PC1 and PC2 both use the same class, but PC2 simply doesn't ever receive input. Given more time; I might implement a separate PlayerController for PC2 that doesn't have input mappings etc.
+- % chance for random obstacle to disappear when overcoming an obstacle
