@@ -21,6 +21,7 @@ class ENDLESSRUNNER_API AEndlessRunnerGameModeBase : public AGameModeBase
 	
 public:
 	virtual void InitGameState() override;
+	virtual void BeginPlay();
 	
 	TObjectPtr<AEndlessRunnerGameStateBase> EndlessGameState;
 

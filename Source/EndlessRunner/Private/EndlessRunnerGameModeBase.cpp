@@ -16,3 +16,10 @@ void AEndlessRunnerGameModeBase::InitEndlessGameState()
 	EndlessGameState->SetMaxLives(MaxLives);
 	EndlessGameState->InvulnerableDuration = InvulnerableDuration;
 }
+
+void AEndlessRunnerGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UGameplayStatics::CreatePlayer(this, -1, true);
+}
