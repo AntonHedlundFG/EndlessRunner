@@ -17,7 +17,10 @@ public:
 	AMovingTileBase();
 
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* RootMeshComponent;
+	TObjectPtr<UStaticMeshComponent> RootMeshComponent;
+
+	UFUNCTION()
+	void GetBoxCenterAndExtents(FVector& Center, FVector& Extents) const;
 
 protected:
 	// Called when the game starts or when spawned

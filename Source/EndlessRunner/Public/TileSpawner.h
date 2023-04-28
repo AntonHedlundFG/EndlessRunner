@@ -10,6 +10,7 @@
 #include "TileSpawner.generated.h"
 
 class AEndlessRunnerGameStateBase;
+class AObstacle;
 
 UCLASS()
 class ENDLESSRUNNER_API ATileSpawner : public AActor
@@ -30,6 +31,9 @@ protected:
 	//A list of all tile blueprint types. Managed in the inspector
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<AMovingTileBase>> TileList;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ObstacleReference;
 
 	//Location for spawning new tiles
 	UPROPERTY(EditAnywhere)
@@ -63,7 +67,10 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<AMovingTileBase*> StarterTiles;
 
-private:
+	//List of all currently spawned Obstacles
+	TArray<TObjectPtr<AActor>> SpawnedObstacles;
+
+protected:
 
 	//Spawns a random tiletype from TileList at FixedSpawnLocation
 	void SpawnRandomTile();
@@ -76,6 +83,15 @@ private:
 
 	//Checks if the newst tile has moved past SpawnNewTileAtYPosition and spawns a new one
 	void CheckSpawnNewTile();
+
+	//Spawns obstacles randomly on a tile
+	void PopulateTileWithObstacles(AMovingTileBase* Tile, int ObstacleAmount);
+
+	static void GetRandomPointOnBoxSurface(FVector BoxCenter, FVector BoxExtents, FVector& ResultingPoint);
+
+	//Ordered from lowest Y-value to highest.
+	static TArray<FVector> GetRandomPointsOnBoxSurface(FVector BoxCenter, FVector BoxExtents, int Amount);
+
 
 public:	
 	// Called every frame
