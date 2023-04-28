@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/EngineTypes.h"
 #include "Delegates/Delegate.h"
@@ -26,60 +25,89 @@ public:
 	AEndlessRunnerGameStateBase();
 
 public:
+
+	//Obstacles call this when they collide with a character, 
+	//regardless of invulnerability status.
 	void CollideWithObstacle();
+
+	//Can be called from the Game Mode to establish max life amount
 	void SetMaxLives(int Lives);
+
+	//Can be called from PlayerControllers when the Pause button is pressed
 	void InputPause();
 
+	//This delegate is broadcast whenever the game speed changes
+	//passing along the new speed value as a float
 	UPROPERTY(BlueprintAssignable)
 	FOnGameSpeedChange OnGameSpeedChange;
 
+	//Broadcast whenever the GameplayState changes
+	//passing along the new state as an enum
 	UPROPERTY(BlueprintAssignable)
 	FOnGameplayStateChange OnGameplayStateChange;
 
-	UPROPERTY()
-	GameplayState CurrentState = GameplayState::Pause;
+	//Broadcast whenever a new entry is added to the high score
+	UPROPERTY(BlueprintAssignable)
+	FOnHighScoreChange OnHighScoreChange;
 
-	UPROPERTY()
-	float CurrentSpeed = 2000.0f;
+	//Broadcast whenever the game ends and the players have a high enough
+	//score to place on the leaderboard, which requires a UI name input event
+	UPROPERTY(BlueprintAssignable)
+	FOnRequestNameInput OnRequestNameInput;
+
+	//This is the method that should be called by the UI name input event
+	//when the delegate above is broadcast.
+	UFUNCTION(BlueprintCallable)
+	void NameInputRequestResponse(FString Name);
+
+	GameplayState GetCurrentGameplayState() { return CurrentGameplayState; }
+
+	float GetSpeed() { return CurrentSpeed; }
 
 	UPROPERTY(VisibleAnywhere)
 	float InvulnerableDuration = 2.0f;
 
+protected:
+
+	UPROPERTY()
+	GameplayState CurrentGameplayState = GameplayState::Pause;
+
+	UPROPERTY()
+	float CurrentSpeed = 2000.0f;
+
+	//C++ class that stores high scores, w/ file loading/saving.
 	HighScoreManager HighScore;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnHighScoreChange OnHighScoreChange;
-
+	//Print-ready format w/ linebreaks
 	UFUNCTION(BlueprintCallable)
 	FString GetHighScoreString() { return HighScore.GetString(); }
 
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentScore;
-
-	UPROPERTY(BlueprintAssignable)
-	FOnRequestNameInput OnRequestNameInput;
-
-	UFUNCTION(BlueprintCallable)
-	void NameInputRequestResponse(FString Name);
-
-protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	int CurrentLives;
 
+	//This is a timer function & handle that keeps track of invulnerability
+	//Called from CollideWithObstacle(). 
+	//OnOllisionTimer() does nothing right now, could be used to end
+	//an invulnerability animation
 	FTimerHandle CollisionTimerHandle;
 	void OnCollisionTimer();
 
-
+	//EndGame() runs when players run out of lives, 
+	//checks if the end score places on the leaderboard, 
+	//and then starts a timer to run ResetGame() after ResetGameDuration seconds.
+	void EndGame();
 	FTimerHandle EndGameTimerHandle;
-	UPROPERTY(VisibleAnywhere)
-	float ResetGameDuration = 3.0f;
 	void ResetGame();
 
+	UPROPERTY(VisibleAnywhere)
+	float ResetGameDuration = 3.0f;
+
+	//Used to set the speed and state of the game while also broadcasting delegates.
 	void SetSpeed(float NewSpeed);
 	void SetState(GameplayState NewState);
-
-	void EndGame();
 
 public:
 	// Called every frame

@@ -49,7 +49,7 @@ void AEndlessRunnerPlayerController::OnInputLeft()
 
 void AEndlessRunnerPlayerController::OnInputJump()
 {
-	if (GameState->CurrentState != GameplayState::Play) { return; }
+	if (GameState->GetCurrentGameplayState() != GameplayState::Play) { return; }
 	GetCharacter()->JumpMaxHoldTime = JumpHoldTime;
 	GetCharacter()->Jump();
 }
@@ -106,7 +106,7 @@ void AEndlessRunnerPlayerController::OnInputPause()
 
 void AEndlessRunnerPlayerController::ChangeLane(bool toRight) 
 {
-	if (GameState->CurrentState != GameplayState::Play) { return; }
+	if (GameState->GetCurrentGameplayState() != GameplayState::Play) { return; }
 	if (toRight && CurrentLane < 1) {
 		CurrentLane++;
 	} else if (!toRight && CurrentLane > -1) {
@@ -123,7 +123,7 @@ void AEndlessRunnerPlayerController::Tick(float DeltaTime)
 
 void AEndlessRunnerPlayerController::TickLaneMovement(float DeltaTime)
 {
-	if (GameState->CurrentState != GameplayState::Play) { return; }
+	if (GameState->GetCurrentGameplayState() != GameplayState::Play) { return; }
 	AEndlessRunnerCharacter* ERCharacter = CastChecked<AEndlessRunnerCharacter>(GetCharacter());
 	if (ERCharacter == nullptr) { return; }
 

@@ -12,7 +12,9 @@ void AEndlessRunnerGameStateBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (CurrentState == GameplayState::Play)
+	//Very simple score calculation, should be improved to take number of 
+	//obstacles spawned into account.
+	if (CurrentGameplayState == GameplayState::Play)
 	{
 		CurrentScore += DeltaTime * CurrentSpeed;
 	}
@@ -21,7 +23,7 @@ void AEndlessRunnerGameStateBase::Tick(float DeltaTime)
 void AEndlessRunnerGameStateBase::CollideWithObstacle()
 {
 	//Nothing happens if we're invulnerable or not playing
-	if (!GetWorldTimerManager().IsTimerActive(CollisionTimerHandle) && CurrentState == GameplayState::Play)
+	if (!GetWorldTimerManager().IsTimerActive(CollisionTimerHandle) && CurrentGameplayState == GameplayState::Play)
 	{
 		if (--CurrentLives <= 0) 
 		{
@@ -36,16 +38,14 @@ void AEndlessRunnerGameStateBase::CollideWithObstacle()
 }
 void AEndlessRunnerGameStateBase::InputPause() 
 {
-	switch (CurrentState) {
+	switch (CurrentGameplayState) {
 	case GameplayState::Pause:
-		CurrentState = GameplayState::Play;
+		SetState(GameplayState::Play);
 		UGameplayStatics::SetGamePaused(this, false);
-		OnGameplayStateChange.Broadcast(GameplayState::Play);
 		break;
 	case GameplayState::Play:
-		CurrentState = GameplayState::Pause;
+		SetState(GameplayState::Pause);
 		UGameplayStatics::SetGamePaused(this, true);
-		OnGameplayStateChange.Broadcast(GameplayState::Pause);
 		break;
 	}
 }
@@ -60,7 +60,7 @@ void AEndlessRunnerGameStateBase::SetSpeed(float NewSpeed)
 }
 void AEndlessRunnerGameStateBase::SetState(GameplayState NewState)
 {
-	CurrentState = NewState;
+	CurrentGameplayState = NewState;
 	OnGameplayStateChange.Broadcast(NewState);
 }
 void AEndlessRunnerGameStateBase::OnCollisionTimer()
@@ -69,8 +69,9 @@ void AEndlessRunnerGameStateBase::OnCollisionTimer()
 }
 void AEndlessRunnerGameStateBase::EndGame()
 {
-	
-	//Maybe this should also include an "&& OnRequestNameInput.IsBound()"?
+	//Checks to see if the final score places on the leaderboard
+	//If it does, request name input from UI
+	//Otherwise, starts a timer to reset the game.
 	if (HighScore.CheckRankFromScore(CurrentScore) < HighScore.ListSize)
 	{
 		SetState(GameplayState::WaitingForName);
@@ -84,15 +85,16 @@ void AEndlessRunnerGameStateBase::EndGame()
 
 void AEndlessRunnerGameStateBase::NameInputRequestResponse(FString Name)
 {
-	if (CurrentState != GameplayState::WaitingForName) { return; }
+	if (CurrentGameplayState != GameplayState::WaitingForName) { return; }
 
 	HighScore.AddNewHighScore(Name, CurrentScore);
 	OnHighScoreChange.Broadcast();
-	CurrentState = GameplayState::Stop;
+	SetState(GameplayState::Stop);
 	GetWorldTimerManager().SetTimer(EndGameTimerHandle, this, &AEndlessRunnerGameStateBase::ResetGame, ResetGameDuration, false);
 }
 
 void AEndlessRunnerGameStateBase::ResetGame()
 {
+	//Reloads the current level
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }

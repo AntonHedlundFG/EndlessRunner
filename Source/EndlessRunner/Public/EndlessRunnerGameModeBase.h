@@ -4,16 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "EndlessRunnerGameStateBase.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "EndlessRunnerGameModeBase.generated.h"
 
 class AEndlessRunnerGameStateBase;
 class HighScoreManager;
 
-/**
- * 
- */
 UCLASS()
 class ENDLESSRUNNER_API AEndlessRunnerGameModeBase : public AGameModeBase
 {
@@ -23,16 +18,12 @@ public:
 	virtual void InitGameState() override;
 	virtual void BeginPlay();
 	
-	TObjectPtr<AEndlessRunnerGameStateBase> EndlessGameState;
-
+	//Max lives, shared between both players.
 	UPROPERTY(BlueprintReadWrite)
 	int MaxLives = 3;
 
+	//Invulnerable duration, shared between both players after one hits an obstacle.
 	UPROPERTY(EditAnywhere)
 	float InvulnerableDuration = 2.0f;
-
-private:
-
-	void InitEndlessGameState();
 
 };

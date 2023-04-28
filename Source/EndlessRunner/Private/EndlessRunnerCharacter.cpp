@@ -18,24 +18,3 @@ AEndlessRunnerCharacter::AEndlessRunnerCharacter()
 
 }
 
-// Called when the game starts or when spawned
-void AEndlessRunnerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AEndlessRunnerCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void AEndlessRunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-

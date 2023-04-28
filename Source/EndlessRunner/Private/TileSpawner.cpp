@@ -21,10 +21,10 @@ void ATileSpawner::BeginPlay()
 	
 	if (GameState) 
 	{
-		SetSpeed(GameState->CurrentSpeed);
-GameState->OnGameSpeedChange.AddDynamic(this, &ATileSpawner::SetSpeed);
-SetState(GameState->CurrentState);
-GameState->OnGameplayStateChange.AddDynamic(this, &ATileSpawner::SetState);
+		SetSpeed(GameState->GetSpeed());
+	GameState->OnGameSpeedChange.AddDynamic(this, &ATileSpawner::SetSpeed);
+	SetState(GameState->GetCurrentGameplayState());
+	GameState->OnGameplayStateChange.AddDynamic(this, &ATileSpawner::SetState);
 	}
 
 	//Add the starter tile to SpawnedTiles array.
