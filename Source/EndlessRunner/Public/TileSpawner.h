@@ -32,6 +32,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<AMovingTileBase>> TileList;
 
+	//A reference to the Obstacle Blueprint to spawn on tiles
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ObstacleReference;
 
@@ -39,17 +40,27 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FVector FixedSpawnLocation;
 
-	//Used for CheckSpawnNewTile()
+	//A new tile spawns when the previous one reaches this Y position.
 	UPROPERTY(EditAnywhere)
 	float SpawnNewTileAtYPosition = -2000.0f;
 
-	//Used for CheckDeleteOldestTile()
+	//A tile is deleted when it reaches this Y position.
 	UPROPERTY(EditAnywhere)
-	float DeleteAtYPosition = 3000.0f;
+	float DeleteTileYPosition = 3000.0f;
 
-	//Movement speed for tiles
+	//An obstacle is deleted when it reaches this Y position.
+	UPROPERTY(EditAnywhere)
+	float DeleteObstacleYPosition = 500.0f;
+
+	//When an obstacle is deleted as a result of moving past the above Y position
+	//this describes the probability that another active obstacle is destroyed.
+	UPROPERTY(EditAnywhere, meta = (ClampMin = 0.0f, ClampMax = 1.0f))
+	float ObstacleDestructionProbability = 0.3f;
+
+	//Movement speed for tiles and obstacles
 	UPROPERTY(VisibleAnywhere)
-	float TileSpeed = 100.0f;
+	float GameSpeed = 100.0f;
+
 
 	UFUNCTION()
 	void SetSpeed(float NewSpeed);
@@ -76,16 +87,19 @@ protected:
 	void SpawnRandomTile();
 
 	//Tick-moves each spawned tile based on TileSpeed
-	void MoveSpawnedTiles(float DeltaTime);
+	void MoveSpawnedTilesAndObstacles(float DeltaTime);
 
-	//Checks if the oldest tile has moved past DeleteAtYPosition and deletes it
+	//Checks if the oldest tile and obstacle has moved past DeleteAtYPosition and deletes it
 	void CheckDeleteOldestTile();
+	void CheckDeleteOldestObstacle();
 
 	//Checks if the newst tile has moved past SpawnNewTileAtYPosition and spawns a new one
 	void CheckSpawnNewTile();
 
-	//Spawns obstacles randomly on a tile
-	void PopulateTileWithObstacles(AMovingTileBase* Tile, int ObstacleAmount);
+	//Spawns obstacles randomly on a tile. Note: Obstacle Amount is a float
+	//The fractional part is used as a percentage chance to round up 
+	//For example: 2.77f => 77% chance for 3, 23% chance for 2.
+	void PopulateTileWithObstacles(AMovingTileBase* Tile, float ObstacleAmountFloat);
 
 	static void GetRandomPointOnBoxSurface(FVector BoxCenter, FVector BoxExtents, FVector& ResultingPoint);
 

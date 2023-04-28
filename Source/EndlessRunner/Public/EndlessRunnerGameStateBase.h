@@ -8,7 +8,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/EngineTypes.h"
 #include "Delegates/Delegate.h"
-#include "TileSpawner.h"
 #include "HighScoreManager.h"
 #include "EndlessRunnerEnums.h"
 #include "EndlessRunnerGameStateBase.generated.h"

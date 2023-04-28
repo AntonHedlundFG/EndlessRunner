@@ -43,8 +43,9 @@ void ATileSpawner::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (CurrentState != GameplayState::Play) { return; }
-	MoveSpawnedTiles(DeltaTime);
+	MoveSpawnedTilesAndObstacles(DeltaTime);
 	CheckDeleteOldestTile();
+	CheckDeleteOldestObstacle();
 	CheckSpawnNewTile();
 }
 
@@ -64,25 +65,25 @@ void ATileSpawner::SpawnRandomTile()
 	TObjectPtr<AMovingTileBase> SpawnedTile = CastChecked<AMovingTileBase>(SpawnedActor);
 
 	//Populate with obstacles (REPLACE 2 WITH DIFFICULTY LOGIC)
-	PopulateTileWithObstacles(SpawnedTile, 2);
+	PopulateTileWithObstacles(SpawnedTile, 2.75f);
 
 	//Add the tile to the SpawnedTiles array
 	SpawnedTiles.Add(SpawnedTile);
 
 }
 
-void ATileSpawner::MoveSpawnedTiles(float DeltaTime)
+void ATileSpawner::MoveSpawnedTilesAndObstacles(float DeltaTime)
 {
 	for (int i = 0; i < SpawnedTiles.Num(); i++)
 	{
 		FVector NewPosition = SpawnedTiles[i]->GetActorLocation();
-		NewPosition.Y += DeltaTime * TileSpeed;
+		NewPosition.Y += DeltaTime * GameSpeed;
 		SpawnedTiles[i]->SetActorLocation(NewPosition);
 	}
 	for (int i = 0; i < SpawnedObstacles.Num(); i++)
 	{
 		FVector NewPosition = SpawnedObstacles[i]->GetActorLocation();
-		NewPosition.Y += DeltaTime * TileSpeed;
+		NewPosition.Y += DeltaTime * GameSpeed;
 		SpawnedObstacles[i]->SetActorLocation(NewPosition);
 	}
 
@@ -92,10 +93,30 @@ void ATileSpawner::CheckDeleteOldestTile()
 	if (SpawnedTiles.Num() == 0) { return; }
 
 	AActor* OldestTile = SpawnedTiles[0];
-	if (OldestTile->GetActorLocation().Y >= DeleteAtYPosition)
+	if (OldestTile->GetActorLocation().Y >= DeleteTileYPosition)
 	{
 		SpawnedTiles.RemoveAt(0);
 		GetWorld()->DestroyActor(OldestTile);
+	}
+}
+void ATileSpawner::CheckDeleteOldestObstacle()
+{
+	if (SpawnedObstacles.Num() == 0) { return; }
+
+	AActor* OldestObstacle = SpawnedObstacles[0];
+	if (OldestObstacle->GetActorLocation().Y >= DeleteObstacleYPosition)
+	{
+		SpawnedObstacles.RemoveAt(0);
+		GetWorld()->DestroyActor(OldestObstacle);
+		
+		float RandomValue = (float)rand() / RAND_MAX;
+		if (RandomValue < ObstacleDestructionProbability && SpawnedObstacles.Num() > 0) 
+		{
+			int RandomIndex = rand() % SpawnedObstacles.Num();
+			TObjectPtr<AActor> RandomObstacle = SpawnedObstacles[RandomIndex];
+			SpawnedObstacles.RemoveAt(RandomIndex);
+			GetWorld()->DestroyActor(RandomObstacle);
+		}
 	}
 }
 void ATileSpawner::CheckSpawnNewTile()
@@ -112,17 +133,23 @@ void ATileSpawner::CheckSpawnNewTile()
 
 void ATileSpawner::SetSpeed(float NewSpeed)
 {
-	TileSpeed = NewSpeed;
-	UKismetSystemLibrary::PrintString(this, FString("New Speed: ") + FString::FromInt((int)NewSpeed));
+	GameSpeed = NewSpeed;
 }
 void ATileSpawner::SetState(GameplayState NewState)
 {
 	CurrentState = NewState;
-	UKismetSystemLibrary::PrintString(this, FString("New State: ") + FString::FromInt((int)NewState));
 }
 
-void ATileSpawner::PopulateTileWithObstacles(AMovingTileBase* Tile, int ObstacleAmount)
+void ATileSpawner::PopulateTileWithObstacles(AMovingTileBase* Tile, float ObstacleAmountFloat)
 {
+	//Cast ObstacleAmountFloat from float to int.
+	//Treats the decimal remainder of the float as a percentage chance to round up instead of down.
+	float Whole, Fraction;
+	Fraction = std::modf(ObstacleAmountFloat, &Whole);
+	int ObstacleAmount = static_cast<int>(Whole);
+	float RandomValue = (float)rand() / RAND_MAX;
+	if (RandomValue < Fraction) { ObstacleAmount++; }
+
 	//Get an array of random points on the surface of the tile, using its box volume information
 	FVector Center, Extents;
 	Tile->GetBoxCenterAndExtents(Center, Extents);
@@ -160,6 +187,6 @@ TArray<FVector> ATileSpawner::GetRandomPointsOnBoxSurface(FVector BoxCenter, FVe
 		GetRandomPointOnBoxSurface(BoxCenter, BoxExtents, NewPoint);
 		ResultingPoints.Add(NewPoint);
 	}
-	ResultingPoints.Sort([](const FVector& A, const FVector& B) {return A.Y < B.Y; });
+	ResultingPoints.Sort([](const FVector& A, const FVector& B) {return A.Y > B.Y; });
 	return ResultingPoints;
 }
