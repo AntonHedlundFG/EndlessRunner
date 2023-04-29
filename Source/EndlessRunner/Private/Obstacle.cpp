@@ -83,6 +83,8 @@ void AObstacle::ApplyRandomModifiers(int NumberOfMods)
 	//Somewhat inefficient since it can "try" to add the same modifiers over and over again
 	//But since it's unlikely that we will want more than 1-2 modifiers at a time
 	//This will not be a problem.
+	//If more modifiers are added to the list and more than 1-2 might be chosen at a time,
+	//this can be updated to use the Fisher-Yates' Shuffle algorithm.
 	for (int i = 0; i < NumberOfMods;)
 	{
 		ObstacleModifier RandomMod = (ObstacleModifier)(std::rand() % (int)ObstacleModifier::Num);
