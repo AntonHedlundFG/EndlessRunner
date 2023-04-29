@@ -84,8 +84,15 @@ void ATileSpawner::MoveSpawnedTilesAndObstacles(float DeltaTime)
 		NewPosition.Y += DeltaTime * GameSpeed;
 		SpawnedTiles[i]->SetActorLocation(NewPosition);
 	}
-	for (int i = 0; i < SpawnedObstacles.Num(); i++)
+	for (int i = SpawnedObstacles.Num() - 1; i >= 0; i--)
 	{
+		//Verify that the obstacle hasn't destroyed itself
+		if (!IsValid(SpawnedObstacles[i])) 
+		{
+			SpawnedObstacles.RemoveAt(i);
+			continue;
+		}
+
 		FVector NewPosition = SpawnedObstacles[i]->GetActorLocation();
 		NewPosition.Y += DeltaTime * GameSpeed;
 		SpawnedObstacles[i]->SetActorLocation(NewPosition);
@@ -110,6 +117,7 @@ void ATileSpawner::CheckDeleteOldestObstacle()
 
 	//Assumes that the first obstacle in the list is the closest towards the player.
 	AActor* OldestObstacle = SpawnedObstacles[0];
+
 	if (OldestObstacle->GetActorLocation().Y >= DeleteObstacleYPosition)
 	{
 		SpawnedObstacles.RemoveAt(0);
