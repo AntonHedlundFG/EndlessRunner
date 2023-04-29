@@ -8,38 +8,38 @@
 #include "EnhancedInputComponent.h"
 #include "EndlessRunnerGameStateBase.h"
 #include "EnhancedInputSubsystems.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "EndlessRunnerPlayerController.generated.h"
 
 class AEndlessRunnerGameStateBase;
+class AEndlessRunnerCharacter;
 
 UCLASS()
 class ENDLESSRUNNER_API AEndlessRunnerPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-public:
-	
-	virtual void BeginPlay();
-	virtual void Tick(float DeltaTime) override;
-
-
 protected:
 
+	//Keeps a cast reference to the GameState
 	TObjectPtr<AEndlessRunnerGameStateBase> GameState;
 
-	virtual void SetupInputComponent() override;
-
+	//Distance between the 3 player movement lanes, assumes that the middle lane
+	//is located at x = 0.
 	UPROPERTY(EditAnywhere)
 	float LaneWidth = 500.0f;
 
+	//Determines sideways movement speed
 	UPROPERTY(EditAnywhere)
 	float SecondsPerLaneChange = 0.5f;
 
+	//Keeps track of the current lane; middle lane is 0
 	int8 CurrentLane = 0;
 
+	//Maximum jumping hold time
 	UPROPERTY(EditAnywhere)
 	float JumpHoldTime = 1.0f;
+
+#pragma region Input Context and Actions
 
 	UPROPERTY(EditAnywhere)
 	UInputMappingContext* InputMappingContext;
@@ -65,20 +65,40 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* InputJumpP2;
 
+#pragma endregion
+
+	//Methods called by input actions
 	void OnInputRight();
 	void OnInputLeft();
 	void OnInputJump();
 	void OnInputStopJump();
 	void OnInputPause();
 
+	//Similar methods called by input actions, these are used to communicate
+	//with player 2, which does not receive input from an Inputdevice
 	void OnInputRightP2();
 	void OnInputLeftP2();
 	void OnInputJumpP2();
 	void OnInputStopJumpP2();
 
+	//Method used by PlayerController for Player 1 to find a reference
+	//To Player 2. Always use GetP2Controller() as it automatically fetches
+	//A reference if not already stored.
 	TObjectPtr<AEndlessRunnerPlayerController> GetP2Controller();
 	TObjectPtr<AEndlessRunnerPlayerController> StoredP2Controller;
 
-	void ChangeLane(bool toRight);	
-	void TickLaneMovement(float DeltaTime);
+	//Stores a cast reference to the controlled Character
+	TObjectPtr<AEndlessRunnerCharacter> CharacterRef;
+
+	//Changes desired lane if possible, Right if true, Left if false
+	void ChangeLane(bool Right);
+
+public:
+
+	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
+
+protected:
+
+	virtual void SetupInputComponent() override;
 };

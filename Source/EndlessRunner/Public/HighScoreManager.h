@@ -102,13 +102,14 @@ public:
 	//Tries adding a new result to the leaderboard. Returns false if score too low.
 	bool AddNewHighScore(FString name, uint32 Score);
 
-	//Array storing HighScores during play, sorted highest->lowest
-	TArray<FHighScore> HighScores;
-
+	//Print-ready format w/ linebreaks
 	UFUNCTION(BlueprintCallable)
 	FString GetString();
 
-private:
+protected:
+
+	//Array storing HighScores during play, sorted highest->lowest
+	TArray<FHighScore> HighScores;
 
 	//Pads HighScores array with fake values if HighScores.Num() < ListSize
 	void FillBlankScores();

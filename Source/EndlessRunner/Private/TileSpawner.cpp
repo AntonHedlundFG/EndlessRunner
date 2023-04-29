@@ -21,14 +21,17 @@ void ATileSpawner::BeginPlay()
 	
 	if (GameState) 
 	{
+		//Grab game speed and set up listener in case the speed of the GameState changes.
 		SetSpeed(GameState->GetSpeed());
-	GameState->OnGameSpeedChange.AddDynamic(this, &ATileSpawner::SetSpeed);
-	SetState(GameState->GetCurrentGameplayState());
-	GameState->OnGameplayStateChange.AddDynamic(this, &ATileSpawner::SetState);
+		GameState->OnGameSpeedChange.AddDynamic(this, &ATileSpawner::SetSpeed);
+
+		//Grab game speed and set up listener in case the GameplayState of the GameState changes.
+		SetState(GameState->GetCurrentGameplayState());
+		GameState->OnGameplayStateChange.AddDynamic(this, &ATileSpawner::SetState);
 	}
 
-	//Add the starter tile to SpawnedTiles array.
-	//The starter tile is in the scene
+	//Add the starter tiles to SpawnedTiles array.
+	//The starter tiles are already in the scene
 	for (int i = 0; i < StarterTiles.Num(); i++)
 	{
 		SpawnedTiles.Add(StarterTiles[i]);
@@ -74,6 +77,7 @@ void ATileSpawner::SpawnRandomTile()
 
 void ATileSpawner::MoveSpawnedTilesAndObstacles(float DeltaTime)
 {
+	//Moves all Tiles and Obstacles towards the players in the scene using the GameSpeed
 	for (int i = 0; i < SpawnedTiles.Num(); i++)
 	{
 		FVector NewPosition = SpawnedTiles[i]->GetActorLocation();
@@ -92,6 +96,7 @@ void ATileSpawner::CheckDeleteOldestTile()
 {
 	if (SpawnedTiles.Num() == 0) { return; }
 
+	//Assumes that the first tile in the list is the closest towards the player.
 	AActor* OldestTile = SpawnedTiles[0];
 	if (OldestTile->GetActorLocation().Y >= DeleteTileYPosition)
 	{
@@ -103,12 +108,14 @@ void ATileSpawner::CheckDeleteOldestObstacle()
 {
 	if (SpawnedObstacles.Num() == 0) { return; }
 
+	//Assumes that the first obstacle in the list is the closest towards the player.
 	AActor* OldestObstacle = SpawnedObstacles[0];
 	if (OldestObstacle->GetActorLocation().Y >= DeleteObstacleYPosition)
 	{
 		SpawnedObstacles.RemoveAt(0);
 		GetWorld()->DestroyActor(OldestObstacle);
 		
+		//Check probability of a random obstacle being destroyed when we successfully dodge one.
 		float RandomValue = (float)rand() / RAND_MAX;
 		if (RandomValue < ObstacleDestructionProbability && SpawnedObstacles.Num() > 0) 
 		{
@@ -121,7 +128,7 @@ void ATileSpawner::CheckDeleteOldestObstacle()
 }
 void ATileSpawner::CheckSpawnNewTile()
 {
-	if (SpawnedTiles.Num() == 0) { return; }
+	if (SpawnedTiles.Num() == 0) { return; } //Possibly overly defensive
 
 	AActor* NewestTile = SpawnedTiles[SpawnedTiles.Num() - 1];
 
@@ -171,6 +178,7 @@ void ATileSpawner::PopulateTileWithObstacles(AMovingTileBase* Tile, float Obstac
 
 void ATileSpawner::GetRandomPointOnBoxSurface(FVector BoxCenter, FVector BoxExtents, FVector& ResultingPoint)
 {
+	//Always selects a point on the surface with maximum Z.
 	ResultingPoint.X = FMath::RandRange(BoxCenter.X - BoxExtents.X, BoxCenter.X + BoxExtents.X);
 	ResultingPoint.Y = FMath::RandRange(BoxCenter.Y - BoxExtents.Y, BoxCenter.Y + BoxExtents.Y);
 	ResultingPoint.Z = BoxCenter.Z + BoxExtents.Z;
@@ -187,6 +195,8 @@ TArray<FVector> ATileSpawner::GetRandomPointsOnBoxSurface(FVector BoxCenter, FVe
 		GetRandomPointOnBoxSurface(BoxCenter, BoxExtents, NewPoint);
 		ResultingPoints.Add(NewPoint);
 	}
+
 	ResultingPoints.Sort([](const FVector& A, const FVector& B) {return A.Y > B.Y; });
+
 	return ResultingPoints;
 }

@@ -8,6 +8,9 @@ void AEndlessRunnerPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	//Hook up all input actions to their respective functions. 
+	//Note that InputJump has a Started and Completed phase as we can hold down the jump
+	//button for a while to jump higher.
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(InputRight, ETriggerEvent::Triggered, this, &AEndlessRunnerPlayerController::OnInputRight);
@@ -21,6 +24,7 @@ void AEndlessRunnerPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(InputJumpP2, ETriggerEvent::Started, this, &AEndlessRunnerPlayerController::OnInputJumpP2);
 		EnhancedInputComponent->BindAction(InputJumpP2, ETriggerEvent::Completed, this, &AEndlessRunnerPlayerController::OnInputStopJumpP2);
 
+		//Without this, we cannot unpause using input devices
 		InputPause->bTriggerWhenPaused = true;
 	}
 }
@@ -98,18 +102,15 @@ TObjectPtr<AEndlessRunnerPlayerController> AEndlessRunnerPlayerController::GetP2
 
 void AEndlessRunnerPlayerController::OnInputPause()
 {
-	if (GameState)
-	{
-		GameState->InputPause();
-	}
+	GameState->InputPause();
 }
 
-void AEndlessRunnerPlayerController::ChangeLane(bool toRight) 
+void AEndlessRunnerPlayerController::ChangeLane(bool Right)
 {
 	if (GameState->GetCurrentGameplayState() != GameplayState::Play) { return; }
-	if (toRight && CurrentLane < 1) {
+	if (Right && CurrentLane < 1) {
 		CurrentLane++;
-	} else if (!toRight && CurrentLane > -1) {
+	} else if (!Right && CurrentLane > -1) {
 		CurrentLane--;
 	} else { return; }
 	
@@ -118,26 +119,32 @@ void AEndlessRunnerPlayerController::ChangeLane(bool toRight)
 void AEndlessRunnerPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	TickLaneMovement(DeltaTime);
-}
-
-void AEndlessRunnerPlayerController::TickLaneMovement(float DeltaTime)
-{
+	
+	//Movement functionality below only applies during the Play state
 	if (GameState->GetCurrentGameplayState() != GameplayState::Play) { return; }
-	AEndlessRunnerCharacter* ERCharacter = CastChecked<AEndlessRunnerCharacter>(GetCharacter());
-	if (ERCharacter == nullptr) { return; }
 
+	//If CharacterRef does not contain a reference to the controlled Character, assign it
+	if (CharacterRef == nullptr) {
+		CharacterRef = CastChecked<AEndlessRunnerCharacter>(GetCharacter());
+		if (CharacterRef == nullptr) { return; }
+	}
+	
+	//Determine desired lane position, current character position, and movement speed.
 	float TargetXPos = CurrentLane * LaneWidth;
-	FVector CharPos = ERCharacter->GetActorLocation();
+	FVector CharPos = CharacterRef->GetActorLocation();
 	float MoveSpeed = LaneWidth / SecondsPerLaneChange;
 
+	//If we're very close to the target, reach it
+	//Otherwise move toward it based on movement speed
 	if (std::abs(CharPos.X - TargetXPos) <= MoveSpeed * DeltaTime) {
 		CharPos.X = TargetXPos;
-	}
+	} 
 	else {
 		int Sign = CharPos.X - TargetXPos < 0 ? 1 : -1; //Move to left or right?
 		CharPos.X += DeltaTime * MoveSpeed * Sign;
 	}
 
-	ERCharacter->SetActorRelativeLocation(CharPos);
+	//Update character position based on previous calculation.
+	CharacterRef->SetActorRelativeLocation(CharPos);
+
 }

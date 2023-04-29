@@ -93,7 +93,7 @@ protected:
 	void CheckDeleteOldestTile();
 	void CheckDeleteOldestObstacle();
 
-	//Checks if the newst tile has moved past SpawnNewTileAtYPosition and spawns a new one
+	//Checks if the newest tile has moved past SpawnNewTileAtYPosition and spawns a new one
 	void CheckSpawnNewTile();
 
 	//Spawns obstacles randomly on a tile. Note: Obstacle Amount is a float

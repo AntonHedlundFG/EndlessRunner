@@ -35,9 +35,6 @@ protected:
 
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	// Allow actors to initialize themselves on the C++ side after all of their 
 	// components have been initialized, only called during gameplay
 	virtual void PostInitializeComponents() override;

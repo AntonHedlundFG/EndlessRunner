@@ -26,13 +26,6 @@ void AObstacle::BeginPlay()
 	GameState = GetWorld()->GetGameState<AEndlessRunnerGameStateBase>();
 }
 
-// Called every frame
-void AObstacle::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void AObstacle::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();

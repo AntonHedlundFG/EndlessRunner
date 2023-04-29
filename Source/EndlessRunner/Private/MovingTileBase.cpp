@@ -13,19 +13,6 @@ AMovingTileBase::AMovingTileBase()
 	SetRootComponent(RootMeshComponent);
 }
 
-// Called when the game starts or when spawned
-void AMovingTileBase::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called every frame
-void AMovingTileBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void AMovingTileBase::GetBoxCenterAndExtents(FVector& Center, FVector& Extents) const
 {
 	RootMeshComponent->Bounds.GetBox().GetCenterAndExtents(Center, Extents);
