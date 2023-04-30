@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "MovingTileBase.h"
 #include "EndlessRunnerEnums.h"
+#include "Obstacle.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "TileSpawner.generated.h"
 
@@ -61,6 +62,14 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	float GameSpeed = 100.0f;
 
+	UFUNCTION()
+	void SetDifficulty(FDifficulty NewDifficulty);
+
+	UPROPERTY()
+	int32 ObstaclesPerTile = 1;
+
+	UPROPERTY()
+	int32 ModifiersPerObstacle = 1;
 
 	UFUNCTION()
 	void SetSpeed(float NewSpeed);
@@ -99,7 +108,7 @@ protected:
 	//Spawns obstacles randomly on a tile. Note: Obstacle Amount is a float
 	//The fractional part is used as a percentage chance to round up 
 	//For example: 2.77f => 77% chance for 3, 23% chance for 2.
-	void PopulateTileWithObstacles(AMovingTileBase* Tile, float ObstacleAmountFloat);
+	void PopulateTileWithObstacles(AMovingTileBase* Tile, float ObstacleAmountFloat, int Modifiers);
 
 	static void GetRandomPointOnBoxSurface(FVector BoxCenter, FVector BoxExtents, FVector& ResultingPoint);
 

@@ -24,10 +24,6 @@ void AObstacle::BeginPlay()
 	Super::BeginPlay();
 
 	GameState = GetWorld()->GetGameState<AEndlessRunnerGameStateBase>();
-
-	//For now, always spawns with 2 random modifiers. 
-	//This can be replaced and called from the TileSpawner.
-	ApplyRandomModifiers(2);
 }
 
 void AObstacle::PostInitializeComponents()

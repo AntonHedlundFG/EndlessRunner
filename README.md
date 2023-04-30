@@ -18,12 +18,16 @@ For this release of the game I have focused on making a functioning game loop; t
 In this part I will implement the actual obstacle generation, beyond the basic prototype version included in part 1.
 
 ### TO-DO:
-- Gradual difficulty increase (higher movement speed and/or obstacle frequency) [How will obstacle frequency affect score?]
+
 - (optional) Object pooling for obstacles & tiles
 
 ### DONE:
 - Random obstacle generation on tile spawn
   - When the TileSpawner spawns a new Tile it also generates a number of obstacles based on the current difficulty. These obstacles are positioned randomly across the surface of the Tile, and given 2 random modifiers to customize their shape (Tall; Wide; Deep; Flying). 
+- Gradual difficulty increase
+  - There is now a DifficultyManager that handles the gradually increasing difficulty level, storing information in a FDifficulty struct. Every time a new tile is spawned, the DifficultyManager is notified, and on regular intervals it updates the difficulty. 
+  - The ScorePerSecond() value is equal to GameSpeed, with a % bonus for each obstacle spawned per tile, and each customizing modifier per obstacle.
+  - Whenever the number of obstacles or modifiers is increased, the speed of the game is reduced; so that there is not a drastic jump in ScorePerSecond() when this happens, also keeping the game speed from skyrocketing too quickly.
 
 ### UPDATE: Surprise tasks
 We were given 2 surprise tasks in the last 2 weeks of the project:

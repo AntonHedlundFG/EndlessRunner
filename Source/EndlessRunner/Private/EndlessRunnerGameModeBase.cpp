@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "EndlessRunnerGameStateBase.h"
 #include "EndlessRunnerGameModeBase.h"
+#include "EndlessRunnerGameStateBase.h"
 
 void AEndlessRunnerGameModeBase::InitGameState()
 {

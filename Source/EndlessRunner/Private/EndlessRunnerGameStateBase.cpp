@@ -16,7 +16,7 @@ void AEndlessRunnerGameStateBase::Tick(float DeltaTime)
 	//obstacles spawned into account.
 	if (CurrentGameplayState == GameplayState::Play)
 	{
-		CurrentScore += DeltaTime * CurrentSpeed;
+		CurrentScore += DeltaTime * CurrentDifficulty.ScorePerSecond();
 	}
 }
 
@@ -97,4 +97,12 @@ void AEndlessRunnerGameStateBase::ResetGame()
 {
 	//Reloads the current level
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
+
+void AEndlessRunnerGameStateBase::TileSpawned()
+{
+	if (DifficultyManagerInstance.TryUpdateDifficulty(CurrentDifficulty))
+	{
+		OnGameDifficultyChange.Broadcast(CurrentDifficulty);
+	}
 }

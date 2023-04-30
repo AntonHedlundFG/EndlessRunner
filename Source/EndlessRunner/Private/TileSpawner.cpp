@@ -25,9 +25,13 @@ void ATileSpawner::BeginPlay()
 		SetSpeed(GameState->GetSpeed());
 		GameState->OnGameSpeedChange.AddDynamic(this, &ATileSpawner::SetSpeed);
 
-		//Grab game speed and set up listener in case the GameplayState of the GameState changes.
+		//Grab GameplayState and set up listener in case the GameplayState of the GameState changes.
 		SetState(GameState->GetCurrentGameplayState());
 		GameState->OnGameplayStateChange.AddDynamic(this, &ATileSpawner::SetState);
+
+		//Grab game difficulty and set up listener in case the difficulty of the GameState changes.
+		SetDifficulty(GameState->GetCurrentDifficulty());
+		GameState->OnGameDifficultyChange.AddDynamic(this, &ATileSpawner::SetDifficulty);
 	}
 
 	//Add the starter tiles to SpawnedTiles array.
@@ -68,7 +72,7 @@ void ATileSpawner::SpawnRandomTile()
 	TObjectPtr<AMovingTileBase> SpawnedTile = CastChecked<AMovingTileBase>(SpawnedActor);
 
 	//Populate with obstacles (REPLACE 2 WITH DIFFICULTY LOGIC)
-	PopulateTileWithObstacles(SpawnedTile, 2.75f);
+	PopulateTileWithObstacles(SpawnedTile, ObstaclesPerTile, ModifiersPerObstacle);
 
 	//Add the tile to the SpawnedTiles array
 	SpawnedTiles.Add(SpawnedTile);
@@ -143,6 +147,7 @@ void ATileSpawner::CheckSpawnNewTile()
 	if (NewestTile->GetActorLocation().Y >= SpawnNewTileAtYPosition)
 	{
 		SpawnRandomTile();
+		GameState->TileSpawned();
 	}
 }
 
@@ -155,7 +160,7 @@ void ATileSpawner::SetState(GameplayState NewState)
 	CurrentState = NewState;
 }
 
-void ATileSpawner::PopulateTileWithObstacles(AMovingTileBase* Tile, float ObstacleAmountFloat)
+void ATileSpawner::PopulateTileWithObstacles(AMovingTileBase* Tile, float ObstacleAmountFloat, int Modifiers)
 {
 	//Cast ObstacleAmountFloat from float to int.
 	//Treats the decimal remainder of the float as a percentage chance to round up instead of down.
@@ -181,6 +186,10 @@ void ATileSpawner::PopulateTileWithObstacles(AMovingTileBase* Tile, float Obstac
 		//Spawn the new obstacle
 		TObjectPtr<AActor> SpawnedObstacle = GetWorld()->SpawnActor(ObstacleReference, &SpawnLocation, &SpawnRotation, SpawnParameters);
 		SpawnedObstacles.Add(SpawnedObstacle);
+		
+		AObstacle* CastObstacle = Cast<AObstacle>(SpawnedObstacle);
+		CastObstacle->ApplyRandomModifiers(ModifiersPerObstacle);
+		
 	}
 }
 
@@ -207,4 +216,12 @@ TArray<FVector> ATileSpawner::GetRandomPointsOnBoxSurface(FVector BoxCenter, FVe
 	ResultingPoints.Sort([](const FVector& A, const FVector& B) {return A.Y > B.Y; });
 
 	return ResultingPoints;
+}
+
+void ATileSpawner::SetDifficulty(FDifficulty NewDifficulty)
+{
+	SetSpeed(NewDifficulty.GameSpeed);
+	ObstaclesPerTile = NewDifficulty.ObstaclesPerTile;
+	ModifiersPerObstacle = NewDifficulty.ModifiersPerObstacle;
+	UKismetSystemLibrary::PrintString(this, NewDifficulty.ToString());
 }

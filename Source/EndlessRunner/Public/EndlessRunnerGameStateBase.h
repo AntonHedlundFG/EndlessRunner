@@ -8,10 +8,12 @@
 #include "Engine/EngineTypes.h"
 #include "Delegates/Delegate.h"
 #include "HighScoreManager.h"
+#include "Difficultymanager.h"
 #include "EndlessRunnerEnums.h"
 #include "EndlessRunnerGameStateBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameSpeedChange, float, NewSpeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameDifficultyChange, FDifficulty, NewDifficulty);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayStateChange, GameplayState, NewState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHighScoreChange);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestNameInput);
@@ -25,6 +27,10 @@ public:
 	AEndlessRunnerGameStateBase();
 
 public:
+
+	//The TileSpawner calls this when it spawns a new tile.
+	//Used to increase difficulty.
+	void TileSpawned();
 
 	//Obstacles call this when they collide with a character, 
 	//regardless of invulnerability status.
@@ -46,6 +52,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameplayStateChange OnGameplayStateChange;
 
+	//Broadcast whenever the difficulty changes
+	//Passing along the new Difficulty as a FDifficulty struct
+	UPROPERTY(BlueprintAssignable)
+	FOnGameDifficultyChange OnGameDifficultyChange;
+
 	//Broadcast whenever a new entry is added to the high score
 	UPROPERTY(BlueprintAssignable)
 	FOnHighScoreChange OnHighScoreChange;
@@ -61,6 +72,7 @@ public:
 	void NameInputRequestResponse(FString Name);
 
 	GameplayState GetCurrentGameplayState() { return CurrentGameplayState; }
+	FDifficulty GetCurrentDifficulty() { return CurrentDifficulty; }
 
 	float GetSpeed() { return CurrentSpeed; }
 
@@ -77,6 +89,11 @@ protected:
 
 	//C++ class that stores high scores, w/ file loading/saving.
 	HighScoreManager HighScore;
+
+	//C++ class that manages increasing difficulty logic, and the difficulty
+	//struct which stores it.
+	DifficultyManager DifficultyManagerInstance;
+	FDifficulty CurrentDifficulty;
 
 	//Print-ready format w/ linebreaks
 	UFUNCTION(BlueprintCallable)
