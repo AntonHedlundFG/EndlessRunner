@@ -1,4 +1,7 @@
-# Endless Runner
+# Endless Runner - C++ Assignment for FutureGames
+
+![](https://github.com/AntonHedlundFG/EndlessRunner/blob/main/Gifs/GameplayGIF.gif)
+
 
 ## Part 1
 For this release of the game I have focused on making a functioning game loop; the level generation is still only a prototype for testing game loop functionality.
